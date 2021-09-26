@@ -45,14 +45,17 @@ jobs:
     needs: [build]
   
     steps:
+      - id: get-sha
+        run: |
+          echo ::set-output name=sha::$( curl -u "u:${{github.token}}" https://api.github.com/repos/webmproject/libvpx/git/ref/heads/master | jq .object.sha | tr -d '"' )
       - name: Create release
         uses: actions/create-release@v1
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release
+          tag_name: ${{ steps.get-sha.outputs.sha }}
+          release_name: libvpx ${{ steps.get-sha.outputs.sha }}
         
       - name: Download Linux build
         uses: actions/download-artifact@v1
