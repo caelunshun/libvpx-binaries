@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          - macos-10.15
+        include:
+          - target: linux
+            dylib-ext: so
+          - target: macos
+            dylib-ext: dylib
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: webmproject/libvpx
+      
+      - name: Install dependencies (macOS)
+        if: matrix.target == 'macos'
+        run: brew install yasm
+        
+      - name: Install dependencies (Linux)
+        if: matrix.target == 'linux'
+        run: sudo apt install yasm
+        
+      - name: Configure build
+        run: ./configure --disable-examples --disable-tools --disable-docs --enable-vp9-decoder --disable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder --disable-unit-tests
+
+      - name: Build
+        run: make -j2
+        
+      - name: Upload temporary artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.target }}
+          path: libvpx.a
+          
+  release:
+    runs-on: ubuntu-18.04
+    name: Publish artifacts to GitHub Releases
+    needs: [build]
+  
+    steps:
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release
+        
+      - name: Download Linux build
+        uses: actions/download-artifact@v1
+        with:
+          name: linux
+
+      - name: Download macOS build
+        uses: actions/download-artifact@v1
+        with:
+          name: macos
+          
+      - name: Upload macOS package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: macos/libvpx.a
+          asset_name: libvpx.a
+          
+      - name: Upload Linux package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: linux/libvpx.a
+          asset_name: libvpx.a
