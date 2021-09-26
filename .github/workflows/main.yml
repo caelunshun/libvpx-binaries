@@ -11,10 +11,8 @@ jobs:
           - ubuntu-18.04
           - macos-10.15
         include:
-          - target: linux
-            dylib-ext: so
-          - target: macos
-            dylib-ext: dylib
+          - TARGET: linux
+          - TARGET: macos
     runs-on: ${{ matrix.os }}
     
     steps:
@@ -23,11 +21,11 @@ jobs:
           repository: webmproject/libvpx
       
       - name: Install dependencies (macOS)
-        if: matrix.target == 'macos'
+        if: matrix.TARGET == 'macos'
         run: brew install yasm
         
       - name: Install dependencies (Linux)
-        if: matrix.target == 'linux'
+        if: matrix.TARGET == 'linux'
         run: sudo apt install yasm
         
       - name: Configure build
@@ -39,7 +37,7 @@ jobs:
       - name: Upload temporary artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.target }}
+          name: ${{ matrix.TARGET }}
           path: libvpx.a
           
   release:
