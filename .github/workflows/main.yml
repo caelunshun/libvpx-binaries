@@ -87,3 +87,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: linux/libvpx.a
           asset_name: libvpx.a
+          asset_content_type: application/x-binary
