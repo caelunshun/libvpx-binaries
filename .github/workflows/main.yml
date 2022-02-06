@@ -51,18 +51,21 @@ jobs:
         shell: powershell
         run: echo "$env:GITHUB_WORKSPACE" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         
+      - name: Create build dir
+        run: mkdir build-output
+        
       - name: Configure build
-        run: ./configure --disable-examples --disable-tools --disable-docs --enable-vp9-decoder --disable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder --disable-unit-tests
+        run: cd build-output && ../configure --disable-examples --disable-tools --disable-docs --enable-vp9-decoder --disable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder --disable-unit-tests
 
       - name: Build
-        run: make -j2
+        run: cd build-output && make -j2
         
       - name: Upload temporary artifact (Unix)
         if: matrix.TARGET != 'windows'
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.TARGET }}
-          path: libvpx.a
+          path: build-output/libvpx.a
           
       - name: Debug
         run: ls
@@ -72,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.TARGET }}
-          path: vpx.lib
+          path: build-output/vpx.lib
           
   release:
     runs-on: ubuntu-18.04
