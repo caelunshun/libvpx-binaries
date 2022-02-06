@@ -30,6 +30,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         if: matrix.TARGET == 'windows'
         with:
+          release: false
           install: >-
             base-devel
             git
@@ -43,11 +44,11 @@ jobs:
         run: sudo apt install yasm
         
       - name: Install dependencies (Windows)
-        if: matrix.TARGET == 'windows'
-        run: python.exe -c "from urllib.request import urlretrieve; urlretrieve('http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe', '$env:GITHUB_WORKSPACE\\yasm.exe')"
-      - name: (Windows) Add Yasm to PATH
-        if: matrix.TARGET == 'windows'
-        run: echo "::add-path::$env:GITHUB_WORKSPACE"
+        if: matrix.os == 'windows-latest'
+        run: python.exe -c "import os; from urllib.request import urlretrieve; urlretrieve('http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe', os.path.join(os.environ['GITHUB_WORKSPACE'], 'yasm.exe'))"
+      - name: Add Yasm to PATH (Windows)
+        if: matrix.os == 'windows-latest'
+        run: echo "$env:GITHUB_WORKSPACE" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         
       - name: Configure build
         run: ./configure --disable-examples --disable-tools --disable-docs --enable-vp9-decoder --disable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder --disable-unit-tests
