@@ -34,6 +34,7 @@ jobs:
           install: >-
             base-devel
             git
+          path-type: inherit
       
       - name: Install dependencies (macOS)
         if: matrix.TARGET == 'macos'
@@ -51,7 +52,7 @@ jobs:
         run: python.exe -c "import os; from urllib.request import urlretrieve; urlretrieve('http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe', os.path.join(os.environ['GITHUB_WORKSPACE'], 'build-output/yasm.exe'))"
       - name: Add Yasm to PATH (Windows)
         if: matrix.os == 'windows-latest'
-        run: echo $GITHUB_WORKSPACE/build-output >> $GITHUB_PATH && cp yasm.exe yasm
+        run: echo $GITHUB_WORKSPACE/build-output >> $GITHUB_PATH
         
       - name: Configure build
         run: cd build-output && ../configure --disable-examples --disable-tools --disable-docs --enable-vp9-decoder --disable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder --disable-unit-tests
