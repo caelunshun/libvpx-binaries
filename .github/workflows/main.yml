@@ -57,6 +57,9 @@ jobs:
       - name: Configure build
         run: cd build-output && ../configure --disable-examples --disable-tools --disable-docs --enable-vp9-decoder --disable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder --disable-unit-tests
 
+      - name: Check yasm availability
+        run: yasm --version
+
       - name: Build
         run: cd build-output && PATH=$PATH:$GITHUB_WORKSPACE make -j2
         
