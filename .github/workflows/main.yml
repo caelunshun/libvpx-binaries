@@ -49,7 +49,7 @@ jobs:
         
       - name: Install dependencies (Windows)
         if: matrix.os == 'windows-latest'
-        run: python.exe -c "import os; from urllib.request import urlretrieve; urlretrieve('http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe', os.path.join(os.environ['GITHUB_WORKSPACE'], 'build-output/yasm.exe'))"
+        run: python.exe -c "import os; from urllib.request import urlretrieve; urlretrieve('http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe', os.path.join(os.environ['GITHUB_WORKSPACE'], 'build-output/yasm'))"
       - name: Add Yasm to PATH (Windows)
         if: matrix.os == 'windows-latest'
         run: echo $GITHUB_WORKSPACE/build-output >> $GITHUB_PATH
