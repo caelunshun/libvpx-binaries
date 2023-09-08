@@ -18,7 +18,7 @@ jobs:
     
     defaults:
       run:
-        shell: ${{ matrix.TARGET == 'windows' && 'C:\msys64\mingw64.exe {0}' || 'bash' }}
+        shell: ${{ matrix.TARGET == 'windows' && 'C:\msys64\msys2_shell.cmd -mingw64 -c {0}' || 'bash' }}
     
     steps:
       - uses: actions/checkout@v2
