@@ -18,22 +18,15 @@ jobs:
     
     defaults:
       run:
-        shell: ${{ matrix.os == 'Windows' && 'msys2 {0}' || 'bash' }}
+        shell: ${{ matrix.os == 'Windows' && 'C:\msys64\mingw64.exe {0}' || 'bash' }}
     
     steps:
       - uses: actions/checkout@v2
         with:
           repository: webmproject/libvpx
-          
-      - uses: msys2/setup-msys2@v2
-        if: matrix.TARGET == 'windows'
-        with:
-          release: false
-          install: >-
-            base-devel
-            git
-            yasm
-          path-type: inherit
+
+      - name: Check shell
+        run: uname -s
       
       - name: Install dependencies (macOS)
         if: matrix.TARGET == 'macos'
@@ -42,6 +35,10 @@ jobs:
       - name: Install dependencies (Linux)
         if: matrix.TARGET == 'linux'
         run: sudo apt install yasm
+
+      - name: Install dependencies (Windows)
+        if: matrix.TARGET == 'windows'
+        run: pacman -S make yasm mingw-w64-x86_64-gcc
         
       - name: Create build dir
         run: mkdir build-output
@@ -55,7 +52,7 @@ jobs:
       - name: Build
         run: cd build-output && make -j2
         
-      - name: Upload temporary artifact (Unix)
+      - name: Upload temporary artifact (Linux/macOS)
         if: matrix.TARGET != 'windows'
         uses: actions/upload-artifact@v2
         with:
@@ -73,7 +70,7 @@ jobs:
           path: build-output/vpx.lib
           
   release:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     name: Publish artifacts to GitHub Releases
     needs: [build]
   
