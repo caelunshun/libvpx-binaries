@@ -46,7 +46,7 @@ jobs:
         run: mkdir build-output
         
       - name: Install dependencies (Windows)
-        if: matrix.os == 'windows-latest'
+        if: matrix.TARGET == 'windows'
         run: pacman -S yasm
         
       - name: Configure build
