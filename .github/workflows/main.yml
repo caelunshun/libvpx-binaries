@@ -32,6 +32,7 @@ jobs:
           install: >-
             base-devel
             git
+            yasm
           path-type: inherit
       
       - name: Install dependencies (macOS)
@@ -44,10 +45,6 @@ jobs:
         
       - name: Create build dir
         run: mkdir build-output
-        
-      - name: Install dependencies (Windows)
-        if: matrix.TARGET == 'windows'
-        run: pacman -S yasm
         
       - name: Configure build
         run: cd build-output && ../configure --disable-examples --disable-tools --disable-docs --enable-vp9-decoder --enable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder --disable-unit-tests
