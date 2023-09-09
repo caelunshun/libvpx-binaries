@@ -56,22 +56,11 @@ jobs:
       - name: Build
         run: cd build-output && make -j2
         
-      - name: Upload temporary artifact (Linux/macOS)
-        if: matrix.TARGET != 'windows'
+      - name: Upload temporary artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.TARGET }}
           path: build-output/libvpx.a
-          
-      - name: Debug
-        run: ls
-          
-      - name: Upload temporary artifact (Windows)
-        if: matrix.TARGET == 'windows'
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.TARGET }}
-          path: build-output/vpx.lib
           
   release:
     runs-on: ubuntu-22.04
@@ -133,6 +122,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: windows/vpx.lib
-          asset_name: libvpx-windows.lib
+          asset_path: windows/libvpx.a
+          asset_name: libvpx-windows.a
           asset_content_type: application/x-binary
