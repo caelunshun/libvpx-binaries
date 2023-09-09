@@ -42,7 +42,7 @@ jobs:
 
       - name: Install dependencies (Windows)
         if: matrix.TARGET == 'windows'
-        run: pacman -S make yasm mingw-w64-x86_64-gcc
+        run: pacman -S --noconfirm make yasm mingw-w64-x86_64-gcc
         
       - name: Create build dir
         run: mkdir build-output
