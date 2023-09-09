@@ -74,6 +74,21 @@ jobs:
     needs: [build]
   
     steps:
+      - name: Download Linux build
+        uses: actions/download-artifact@v1
+        with:
+          name: linux
+
+      - name: Download macOS build
+        uses: actions/download-artifact@v1
+        with:
+          name: macos
+
+      - name: Download Windows build
+        uses: actions/download-artifact@v1
+        with:
+          name: windows
+          
       - run: mv linux/libvpx.a libvpx-linux.a && mv macos/libvpx.a libvpx-macos.a && mv windows/libvpx.a libvpx-windows.a
     
       - uses: "marvinpinto/action-automatic-releases@latest"
