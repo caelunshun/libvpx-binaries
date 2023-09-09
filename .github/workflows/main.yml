@@ -1,12 +1,9 @@
 name: Build libvpx
 
 on:
-  workflow_dispatch:
-    inputs:
-      releaseName:
-        description: "Release name"
-        required: true
-        type: string
+  push:
+    tags:
+      - "*"
 
 jobs:
   build:
