@@ -1,6 +1,12 @@
 name: Build libvpx
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      releaseName:
+        description: "Release name"
+        required: true
+        type: string
 
 jobs:
   build:
@@ -68,9 +74,8 @@ jobs:
     needs: [build]
   
     steps:
-      - name: Get tag name
-        id: get_tag
-        run: echo ::set-output name=TAG::$(echo $GITHUB_REF | cut -d / -f 3)
+      - name: Run latest-tag
+        uses: EndBug/latest-tag@latest
 
       - name: Create release
         uses: actions/create-release@v1
@@ -78,8 +83,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.get_tag.outputs.TAG }}
-          release_name: Release ${{ steps.get_tag.outputs.TAG }}
+          tag_name: latest
+          release_name: ${{ inputs.releaseName }}
         
       - name: Download Linux build
         uses: actions/download-artifact@v1
