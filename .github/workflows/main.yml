@@ -27,6 +27,7 @@ jobs:
 
       - name: Install msys2
         uses: msys2/setup-msys2@v2
+        if: matrix.TARGET == 'windows'
 
       - name: Check shell
         run: uname -s
