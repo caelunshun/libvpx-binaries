@@ -18,12 +18,15 @@ jobs:
     
     defaults:
       run:
-        shell: ${{ matrix.TARGET == 'windows' && 'C:\msys64\msys2.exe {0}' || 'bash' }}
+        shell: ${{ matrix.TARGET == 'windows' && 'msys2 {0}' || 'bash' }}
     
     steps:
       - uses: actions/checkout@v2
         with:
           repository: webmproject/libvpx
+
+      - name: Install msys2
+        uses: msys2/setup-msys2@v2
 
       - name: Check shell
         run: uname -s
